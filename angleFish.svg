@@ -1,0 +1,26 @@
+<svg
+  width="50"
+  height="50"
+  viewBox="0 0 50 50"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>Angelfish</title>
+  <!-- Body -->
+  <ellipse cx="20" cy="25" rx="12" ry="10" fill="#00BFFF" />
+  <!-- Dorsal/anal fins -->
+  <path
+    d="M 14 15 Q 5 5 18 2 L 18 15 Z"
+    fill="#87CEFA"
+  />
+  <path
+    d="M 14 35 Q 5 45 18 48 L 18 35 Z"
+    fill="#87CEFA"
+  />
+  <!-- Tail fin -->
+  <path
+    d="M 28 18 L 45 10 L 45 40 L 28 32 Z"
+    fill="#1E90FF"
+  />
+  <!-- Eye -->
+  <circle cx="17" cy="23" r="2" fill="#000" />
+</svg>
