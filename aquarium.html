@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Aquarium</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+    }
+
+    #status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(45deg, #36D1DC, #5B86E5);
+      color: #fff;
+      padding: 12px 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    #status-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #coins-display,
+    #cleanliness-display {
+      font-size: 16px;
+      font-weight: 500;
+      font-family: "Roboto", sans-serif;
+    }
+
+    #status-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #status-bar button {
+      font-family: "Roboto", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(45deg, #64b3f4, #c2e59c);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition:
+        transform 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
+    }
+
+    #status-bar button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    #status-bar button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    button {
+      font-family: "Roboto", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      padding: 12px 20px;
+      margin: 8px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #36D1DC, #5B86E5);
+      cursor: pointer;
+      outline: none;
+      transition:
+        transform 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    button:focus {
+      outline: 2px solid rgba(91, 134, 229, 0.6);
+      outline-offset: 2px;
+    }
+
+    #coins-display,
+    #cleanliness-display {
+      font-weight: bold;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      top: 30%;
+      width: 50%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    #error-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3000;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+    }
+
+    .modal-content2 {
+      background-color: #fff;
+      border-radius: 12px;
+      max-width: 530px;
+      width: 80%;
+
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Close/OK button inside the error modal */
+    #close-error-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #666;
+      cursor: pointer;
+    }
+
+    /* Title and paragraph styling */
+    .modal-content2 h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: #333;
+    }
+
+    .modal-content2 p {
+      margin: 16px 0;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    /* Optional: add a styled OK button at the bottom */
+    #confirm-error-btn {
+      background: linear-gradient(45deg, #36D1DC, #5B86E5);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      padding: 8px 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    #confirm-error-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes showModal {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-content2 .close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1.5rem;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .modal-content2 h2 {
+      font-family: "Roboto", sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #d9534f;
+    }
+
+    .modal-content2 p {
+      font-size: 1rem;
+      margin: 10px 0 20px;
+      color: #333;
+      font-family: "Roboto", sans-serif;
+    }
+
+    .error-ok-btn {
+      display: inline-block;
+      background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: "Roboto", sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .error-ok-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .error-ok-btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .modal-content2 h2 {
+      margin-top: 0;
+    }
+
+    .modal-content2 p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    /* =============== SHOP MODAL =============== */
+    #shop-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(3px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #shop-modal .modal-content {
+      background: linear-gradient(135deg, #ffffff, #f9f9f9);
+      margin: 60px auto;
+      /* auto center horizontally */
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 800px !important;
+      /* responsive max width */
+      width: 100%;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    #shop-modal h2 {
+      margin-top: 0;
+      font-family: "Roboto", sans-serif;
+      font-size: 1.5rem;
+      text-align: center;
+      color: #333;
+      position: relative;
+    }
+
+    /* X (close) button at top-right */
+    #shop-modal .close {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #666;
+      cursor: pointer;
+    }
+
+    /* =============== SHOP ITEMS GRID =============== */
+    /* #shop-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-gap: 20px;
+      margin-top: 20px;
+      padding: 0 10px;
+    }
+
+    .shop-item {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .shop-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .shop-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      display: block;
+      margin: 10px auto 5px;
+    }
+
+    .shop-item p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
+      font-family: "Roboto", sans-serif;
+    } */
+    /* Modal Overlay */
+    #shop-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(3px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Modal Content */
+    #shop-modal .modal-content {
+      background: linear-gradient(135deg, #ffffff, #f9f9f9);
+      margin: 60px auto;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Close Button (X) */
+    #shop-modal .close {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #666;
+      cursor: pointer;
+    }
+
+    /* Shop Title */
+    #shop-modal h2 {
+      margin-top: 0;
+      font-family: "Roboto", sans-serif;
+      font-size: 1.5rem;
+      text-align: center;
+      color: #333;
+    }
+
+    /* Shop Items Container: grid layout */
+    #shop-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
+      grid-gap: 20px;
+      margin-top: 20px;
+      padding: 0 10px;
+    }
+
+    /* Individual shop card */
+    .shop-item {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    /* Hover effect to lift the card */
+    .shop-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Item image */
+    .shop-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin: 5px auto;
+    }
+
+    /* Item name & price text */
+    .shop-item p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: #333;
+      font-family: "Roboto", sans-serif;
+      font-weight: 500;
+    }
+
+    .shop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* h2 on the left, coin balance on the right */
+      margin-bottom: 10px;
+      margin-right: 30px;
+    }
+
+    /* The coin balance in the shop */
+    #shop-coin-balance {
+      font-family: "Roboto", sans-serif;
+      font-size: 1rem;
+      color: #333;
+      font-weight: 600;
+      background-color: #f1f1f1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Quantity Row (plus/minus, input, buy button) */
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    /* The numeric input field */
+    .shop-item input[type="number"] {
+      width: 50px;
+      text-align: center;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      font-family: "Roboto", sans-serif;
+      font-weight: 500;
+    }
+
+    /* Plus/Minus Buttons */
+    .qty-btn {
+      background: linear-gradient(45deg, #64b3f4, #c2e59c);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      align-content: center;
+      display: flex;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .qty-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Buy button inside the card */
+    .buy-btn {
+      background: linear-gradient(45deg, #36D1DC, #5B86E5);
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-left: 6px;
+    }
+
+    .buy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    #aquarium {
+      width: 100%;
+      height: calc(100vh - 70px);
+      background: url("https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/aquarium-background.svg") center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fish {
+      animation: swim 10s linear infinite;
+    }
+
+    .algae {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-color: green;
+      opacity: 0.3;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .fish.decoration {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      z-index: 999999999999999999999;
+      opacity: 1;
+      cursor: pointer;
+      animation: swim linear infinite;
+    }
+
+    @keyframes swim {
+      0% {
+        transform: translateX(0) scaleX(1);
+      }
+
+      50% {
+        transform: translateX(calc(100vw - 80px)) scaleX(1);
+      }
+
+      51% {
+        transform: translateX(calc(100vw - 80px)) scaleX(-1);
+      }
+
+      100% {
+        transform: translateX(0) scaleX(-1);
+      }
+    }
+
+    /* Ensure the decoration element is positioned relatively (if needed) */
+    .decoration {
+      position: absolute;
+      background-size: contain;
+      background-repeat: no-repeat;
+      cursor: move;
+      /* indicates draggable */
+    }
+
+    /* Resize Handle Styling */
+    .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      bottom: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.5);
+      cursor: nwse-resize;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+    }
+
+    .fish:hover {
+      filter: brightness(1.1);
+    }
+
+ 
+
+    .bubble {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #fff;
+      opacity: 0.8;
+      animation: bubble-up 2s ease-in-out forwards;
+    }
+
+    @keyframes bubble-up {
+      0% {
+        transform: translateY(0);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: translateY(-80px);
+        opacity: 0;
+      }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 100px auto;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 50%;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    /* 
+    #shop-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .shop-item {
+      text-align: center;
+      width: 80px;
+      cursor: pointer;
+    }
+
+    .shop-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 5px;
+    }
+
+    .shop-item p {
+      margin: 0;
+      font-size: 14px;
+    } */
+
+    /* Mini-Game Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #minigame-container {
+      background: #ffffff;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #minigame-area {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      margin: 10px auto;
+      background: #eee;
+      overflow: hidden;
+    }
+
+    .minigame-coin,
+    .minigame-obstacle {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .minigame-coin {
+      background-color: gold;
+    }
+
+    .minigame-obstacle {
+      background-color: red;
+    }
+
+    .urgent-clean {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e53) !important;
+      animation: pulse 1.1s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.07);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      #status-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #status-bar button {
+        margin-top: 5px;
+      }
+
+      #aquarium {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Status Bar -->
+  <div id="status-bar">
+    <div id="coins-display">Coins: 0</div>
+    <div id="cleanliness-display">Cleanliness: 100%</div>
+    <button id="feed-btn">Feed Fish</button>
+    <button id="clean-btn">Clean Aquarium</button>
+    <button id="open-shop-btn">Shop</button>
+    <button id="start-minigame-btn">Mini-Game</button>
+  </div>
+
+  <div id="aquarium">
+  </div>
+
+  <!-- The Shop Modal -->
+  <div id="shop-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-shop-btn" class="close">&times;</span>
+      <!-- SHOP HEADER -->
+      <div class="shop-header">
+        <h2>Shop</h2>
+        <div id="shop-coin-balance">Coins: 0</div>
+      </div>
+      <!-- Items Grid -->
+      <div id="shop-items"></div>
+    </div>
+  </div>
+
+
+  <div id="minigame-overlay" class="modal">
+    <div id="minigame-container" class="modal-content">
+      <span id="close-minigame-btn" class="close">&times;</span>
+
+      <h2>Mini-Game (10s)</h2>
+      <p id="minigame-timer">10</p>
+      <div id="minigame-instructions">Collect coins, avoid red obstacles!</div>
+      <div id="minigame-area">
+      </div>
+    </div>
+
+  </div>
+
+  <div id="error-modal" class="modal">
+    <div class="modal-content2">
+      <span id="close-error-btn" class="close">&times;</span>
+      <h2>Error</h2>
+      <p id="error-message">An Error</p>
+      <!-- Error Modal “OK” Button -->
+      <button id="error-ok-btn" class="error-ok-btn">OK</button>
+    </div>
+  </div>
+  <script>
+
+    let coins = 100;
+    let cleanliness = 100;
+
+
+    let fishes = [];
+    let decorations = [];
+    let algaeElements = [];
+
+    const fishTypes = [
+      { name: "Guppy", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/guppy.svg", price: 10 },
+      { name: "Angelfish", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/angleFish.svg", price: 20 },
+      { name: "Tetra", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/tetra.svg", price: 15 },
+    ];
+    const decorationTypes = [
+      { name: "Castle", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/aquarium-background.svg", price: 50 },
+      { name: "Treasure Chest", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/treasure.svg", price: 75 },
+      { name: "Rock Formation", image: "https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/rock.svg", price: 100 },
+    ];
+    const bubbleSound = new Audio("https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/bubble.mp3");
+    const coinSound = new Audio("https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/coin.mp3");
+
+    bubbleSound.volume = 0.7;
+    coinSound.volume = 0.7;
+    class Fish {
+      constructor({ name, image, price }) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        const aquariumEl = document.getElementById("aquarium");
+        const rect = aquariumEl.getBoundingClientRect();
+
+        const fishWidth = 50;
+        const fishHeight = 50;
+        this.x = Math.floor(Math.random() * (rect.width - fishWidth));
+        this.y = Math.floor(Math.random() * (rect.height - fishHeight));
+
+        this.dx = (Math.random() * 1 + 0.5) * (Math.random() < 0.5 ? -1 : 1);
+        this.dy = (Math.random() * 1 + 0.5) * (Math.random() < 0.5 ? -1 : 1);
+
+        this.element = this.createFishElement();
+      }
+
+      createFishElement() {
+        const el = document.createElement("div");
+        el.classList.add("fish");
+        el.style.backgroundImage = `url(${this.image})`;
+        el.style.left = `${this.x}px`;
+        el.style.top = `${this.y}px`;
+
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          createBubble(this.x + 25, this.y + 25);
+          bubbleSound.currentTime = 0;
+          bubbleSound.play().catch((err) => {
+            console.warn("Coin sound failed to play:", err);
+          });
+          coins++;
+
+          updateStatusBar();
+        });
+
+        document.getElementById("aquarium").appendChild(el);
+        return el;
+      }
+
+      updatePosition() {
+        const aquariumEl = document.getElementById("aquarium");
+        const rect = aquariumEl.getBoundingClientRect();
+        const fishWidth = 50;
+        const fishHeight = 50;
+
+        this.x += this.dx;
+        this.y += this.dy;
+
+        if (this.x < 0) {
+          this.x = 0;
+          this.dx = -this.dx;
+        } else if (this.x + fishWidth > rect.width) {
+          this.x = rect.width - fishWidth;
+          this.dx = -this.dx;
+        }
+
+        if (this.y < 0) {
+          this.y = 0;
+          this.dy = -this.dy;
+        } else if (this.y + fishHeight > rect.height) {
+          this.y = rect.height - fishHeight;
+          this.dy = -this.dy;
+        }
+
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+      }
+    }
+
+
+    class Decoration {
+      constructor({ name, image, price }) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        // Random initial position for the decoration
+        this.x = Math.floor(Math.random() * (window.innerWidth - 80));
+        this.y = Math.floor(Math.random() * (window.innerHeight - 200)) + 200;
+        // Set an initial size (width and height)
+        this.width = 50;
+        this.height = 50;
+        this.element = this.createDecorationElement();
+      }
+
+      createDecorationElement() {
+        // Create the main decoration element
+        const el = document.createElement("div");
+        el.classList.add("decoration");
+        el.style.backgroundImage = `url(${this.image})`;
+        el.style.left = `${this.x}px`;
+        el.style.top = `${this.y}px`;
+        el.style.width = `${this.width}px`;
+        el.style.height = `${this.height}px`;
+
+        // ----- Dragging functionality -----
+        // Set relative position so that the resize handle can be positioned absolutely
+        el.style.position = "absolute";
+        // Add event listener for dragging the element
+        el.addEventListener("mousedown", (e) => {
+          // If the target is the resize handle, do not drag.
+          if (e.target.classList.contains("resize-handle")) return;
+
+          e.preventDefault();
+          let startX = e.clientX;
+          let startY = e.clientY;
+          const origX = this.x;
+          const origY = this.y;
+
+          function onMouseMove(eMove) {
+            const dx = eMove.clientX - startX;
+            const dy = eMove.clientY - startY;
+            // Update the decoration's position variables
+            this.x = origX + dx;
+            this.y = origY + dy;
+            el.style.left = `${this.x}px`;
+            el.style.top = `${this.y}px`;
+          }
+
+          // Bind with the current context so that `this` is our decoration
+          const boundMouseMove = onMouseMove.bind(this);
+
+          function onMouseUp() {
+            document.removeEventListener("mousemove", boundMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+
+          document.addEventListener("mousemove", boundMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        });
+
+        // ----- Resize functionality -----
+        // Create a resize handle and append it to the decoration element
+        const resizeHandle = document.createElement("div");
+        resizeHandle.classList.add("resize-handle");
+
+        // Prevent dragging when resizing
+        resizeHandle.addEventListener("mousedown", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          let startX = e.clientX;
+          let startY = e.clientY;
+          let startWidth = this.width;
+          let startHeight = this.height;
+
+          function onMouseMove(eMove) {
+            // Calculate new dimensions based on mouse movement
+            const newWidth = startWidth + (eMove.clientX - startX);
+            const newHeight = startHeight + (eMove.clientY - startY);
+            // Optionally, set a minimum size
+            this.width = newWidth > 30 ? newWidth : 30;
+            this.height = newHeight > 30 ? newHeight : 30;
+            el.style.width = `${this.width}px`;
+            el.style.height = `${this.height}px`;
+          }
+
+          const boundMouseMove = onMouseMove.bind(this);
+
+          function onMouseUp() {
+            document.removeEventListener("mousemove", boundMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+
+          document.addEventListener("mousemove", boundMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        });
+
+        // Append the resize handle to the decoration element
+        el.appendChild(resizeHandle);
+
+        document.getElementById("aquarium").appendChild(el);
+        return el;
+      }
+    }
+
+    function createBubble(x, y) {
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      bubble.style.left = `${x}px`;
+      bubble.style.top = `${y}px`;
+      document.getElementById("aquarium").appendChild(bubble);
+
+      setTimeout(() => {
+        if (bubble.parentNode) {
+          bubble.parentNode.removeChild(bubble);
+        }
+      }, 2000);
+    }
+
+    function feedFish() {
+      fishes.forEach((fish) => {
+        const food = document.createElement("div");
+        food.style.position = "absolute";
+        food.style.width = "8px";
+        food.style.height = "8px";
+        food.style.borderRadius = "50%";
+        food.style.backgroundColor = "brown";
+        food.style.left = fish.x + 25 + "px";
+        food.style.top = "0px";
+        document.getElementById("aquarium").appendChild(food);
+
+        // Animate the food falling
+        let position = 0;
+        const dropInterval = setInterval(() => {
+          if (position >= fish.y + 25) {
+            clearInterval(dropInterval);
+            food.remove();
+          } else {
+            position += 5;
+            food.style.top = position + "px";
+          }
+        }, 50);
+      });
+    }
+
+    function cleanAquarium() {
+      cleanliness = 100;
+      updateStatusBar();
+      removeAllAlgae();
+    }
+
+    function updateCleanliness() {
+      cleanliness -= 0.03; // degrade over time
+      if (cleanliness < 0) cleanliness = 0;
+      updateStatusBar();
+      const cleanBtn = document.getElementById("clean-btn");
+
+      // Highlight if cleanliness < 20%
+      if (cleanliness < 40) {
+        cleanBtn.classList.add("urgent-clean");
+      } else {
+        cleanBtn.classList.remove("urgent-clean");
+      }
+
+      // If cleanliness hits 0 => automatic penalty
+      if (cleanliness <= 0) {
+        let penalty = 5; // coins to deduct
+        if (coins >= penalty) {
+          coins -= penalty;
+        } else {
+          coins = 0;
+        }
+        updateStatusBar();
+        // Optionally reset cleanliness a bit
+        cleanliness = 60;
+        showErrorModal(
+          "Your aquarium got too dirty! We automatically deducted 20 coins for cleaning services."
+        );
+
+      }
+      if (cleanliness < 80 && cleanliness > 79.97) {
+        spawnAlgae();
+      } else if (cleanliness < 60 && cleanliness > 59.97) {
+        spawnAlgae();
+      } else if (cleanliness < 40 && cleanliness > 39.97) {
+        spawnAlgae();
+      } else if (cleanliness < 20 && cleanliness > 19.97) {
+        spawnAlgae();
+      } else if (cleanliness < 10 && cleanliness > 9.97) {
+        // maybe spawn a second lump
+        spawnAlgae();
+        spawnAlgae();
+      }
+    }
+
+
+    function gameLoop() {
+      updateCleanliness();
+
+      fishes.forEach((fish) => {
+        fish.updatePosition();
+      });
+
+      requestAnimationFrame(gameLoop);
+    }
+    function openShop() {
+      document.getElementById("shop-modal").style.display = "block";
+    }
+
+    function closeShop() {
+      document.getElementById("shop-modal").style.display = "none";
+    }
+    function closeMiniGame() {
+      document.getElementById("minigame-overlay").style.display = "none";
+
+    }
+    function showErrorModal(message) {
+      console.log('message', message)
+      const errorModal = document.getElementById("error-modal");
+
+      const errorMessageEl = document.getElementById("error-message");
+      errorMessageEl.innerText = message;
+
+      // Display the modal
+      errorModal.style.display = "block";
+    }
+    function closeErrorModal() {
+      document.getElementById("error-modal").style.display = "none";
+    }
+    document.getElementById("close-error-btn").addEventListener("click", closeErrorModal);
+    document.getElementById("error-ok-btn").addEventListener("click", closeErrorModal);
+
+    // Optionally, close when clicking outside the modal content
+    window.addEventListener("click", (e) => {
+      const errorModal = document.getElementById("error-modal");
+      if (e.target === errorModal) {
+        closeErrorModal();
+      }
+    });
+
+
+    function populateShop() {
+      const shopItemsContainer = document.getElementById("shop-items");
+      shopItemsContainer.innerHTML = "";
+
+      const allItems = [...fishTypes, ...decorationTypes];
+
+      allItems.forEach((item) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("shop-item");
+        const img = document.createElement("img");
+        img.src = item.image;
+        const nameP = document.createElement("p");
+        nameP.textContent = item.name;
+        const priceP = document.createElement("p");
+        priceP.textContent = `Price: ${item.price}`;
+        const quantityRow = document.createElement("div");
+        quantityRow.classList.add("quantity-row");
+        const minusBtn = document.createElement("button");
+        minusBtn.textContent = "-";
+        minusBtn.classList.add("qty-btn");
+        minusBtn.onclick = () => {
+          let currentVal = parseInt(qtyInput.value);
+          if (currentVal > 1) {
+            qtyInput.value = currentVal - 1;
+          }
+        };
+
+        const qtyInput = document.createElement("input");
+        qtyInput.type = "number";
+        qtyInput.min = "1";
+        qtyInput.value = "1";
+
+        const plusBtn = document.createElement("button");
+        plusBtn.textContent = "+";
+        plusBtn.classList.add("qty-btn");
+        plusBtn.onclick = () => {
+          let currentVal = parseInt(qtyInput.value);
+          qtyInput.value = currentVal + 1;
+        };
+
+        quantityRow.appendChild(minusBtn);
+        quantityRow.appendChild(qtyInput);
+        quantityRow.appendChild(plusBtn);
+
+        const buyBtn = document.createElement("button");
+        buyBtn.classList.add("buy-btn");
+        buyBtn.textContent = "Buy";
+        buyBtn.onclick = () => {
+          const quantity = parseInt(qtyInput.value) || 1;
+          const totalCost = item.price * quantity;
+
+          if (coins >= totalCost) {
+            coins -= totalCost;
+            updateStatusBar();
+            if (fishTypes.some((f) => f.name === item.name)) {
+              for (let i = 0; i < quantity; i++) {
+                const newFish = new Fish(item);
+                fishes.push(newFish);
+              }
+            } else {
+              for (let i = 0; i < quantity; i++) {
+                const newDeco = new Decoration(item);
+                decorations.push(newDeco);
+              }
+            }
+          } else {
+            showErrorModal("Oops! You don't have enough coins. Play the mini-game to earn more!");
+          }
+        };
+        quantityRow.appendChild(buyBtn);
+
+        // Append elements to item card
+        itemDiv.appendChild(img);
+        itemDiv.appendChild(nameP);
+        itemDiv.appendChild(priceP);
+        itemDiv.appendChild(quantityRow);
+
+        shopItemsContainer.appendChild(itemDiv);
+      });
+    }
+    function updateStatusBar() {
+      // Existing code:
+      document.getElementById("coins-display").textContent = `Coins: ${coins}`;
+      document.getElementById("cleanliness-display").textContent = `Cleanliness: ${cleanliness.toFixed(0)}%`;
+
+      // NEW: Update the shop modal coin display if it exists
+      const shopCoinEl = document.getElementById("shop-coin-balance");
+      if (shopCoinEl) {
+        shopCoinEl.textContent = `Coins: ${coins}`;
+      }
+    }
+    let minigameTime = 10;
+    let minigameInterval = null;
+
+    function startMiniGame() {
+      minigameTime = 10;
+      document.getElementById("minigame-timer").textContent = minigameTime;
+      document.getElementById("minigame-overlay").style.display = "flex";
+
+      // Spawn coins and obstacles
+      spawnMiniGameItems();
+
+      minigameInterval = setInterval(() => {
+        minigameTime--;
+        document.getElementById("minigame-timer").textContent = minigameTime;
+        if (minigameTime <= 0) {
+          endMiniGame();
+        }
+      }, 1000);
+    }
+
+    function spawnMiniGameItems() {
+      const area = document.getElementById("minigame-area");
+      area.innerHTML = "";
+
+      // For a small example, spawn 5 coins and 3 obstacles
+      for (let i = 0; i < 5; i++) {
+        const coin = document.createElement("div");
+        coin.classList.add("minigame-coin");
+        coin.style.left = Math.random() * (area.offsetWidth - 30) + "px";
+        coin.style.top = Math.random() * (area.offsetHeight - 30) + "px";
+        coin.addEventListener("click", () => {
+          coins += 10; // Earn 5 coins
+          updateStatusBar();
+          coinSound.currentTime = 0;
+          coinSound.play().catch((err) => {
+            console.warn("Coin sound failed to play:", err);
+          });
+          coin.remove();
+        });
+        area.appendChild(coin);
+      }
+      for (let i = 0; i < 3; i++) {
+        const obstacle = document.createElement("div");
+        obstacle.classList.add("minigame-obstacle");
+        obstacle.style.left = Math.random() * (area.offsetWidth - 30) + "px";
+        obstacle.style.top = Math.random() * (area.offsetHeight - 30) + "px";
+        obstacle.addEventListener("click", () => {
+          // Penalty if user clicks obstacle
+          coins = Math.max(0, coins - 5);
+          updateStatusBar();
+          obstacle.remove();
+        });
+        area.appendChild(obstacle);
+      }
+    }
+    function spawnAlgae() {
+      const aquarium = document.getElementById("aquarium");
+      const rect = aquarium.getBoundingClientRect();
+
+      // Create the algae lump
+      const algaeEl = document.createElement("div");
+      algaeEl.classList.add("algae");
+
+      // Random position, ensuring it's fully inside aquarium
+      const algaeSize = 60; // dimension of the algae lump
+      const xPos = Math.floor(Math.random() * (rect.width - algaeSize));
+      const yPos = Math.floor(Math.random() * (rect.height - algaeSize));
+
+      algaeEl.style.left = xPos + "px";
+      algaeEl.style.top = yPos + "px";
+
+      aquarium.appendChild(algaeEl);
+      algaeElements.push(algaeEl);
+    }
+
+    /**
+     * Removes all algae lumps from the aquarium and clears the array.
+     */
+    function removeAllAlgae() {
+      for (let algaeEl of algaeElements) {
+        if (algaeEl.parentNode) {
+          algaeEl.parentNode.removeChild(algaeEl);
+        }
+      }
+      algaeElements = [];
+    }
+    function endMiniGame() {
+      clearInterval(minigameInterval);
+      document.getElementById("minigame-overlay").style.display = "none";
+    }
+    window.addEventListener("load", () => {
+      // Initial shop load
+      populateShop();
+      updateStatusBar();
+      gameLoop(); // Start main loop
+    });
+
+    document.getElementById("feed-btn").addEventListener("click", feedFish);
+    document.getElementById("clean-btn").addEventListener("click", cleanAquarium);
+    document.getElementById("open-shop-btn").addEventListener("click", openShop);
+    document.getElementById("close-shop-btn").addEventListener("click", closeShop);
+    document.getElementById("close-minigame-btn").addEventListener("click", closeMiniGame);
+    document.getElementById("start-minigame-btn").addEventListener("click", startMiniGame);
+
+    window.addEventListener("click", (e) => {
+      const shopModal = document.getElementById("shop-modal");
+      if (e.target === shopModal) {
+        closeShop();
+      }
+    });
+
+  </script>
+</body>
+
+</html>
