@@ -1,0 +1,17 @@
+<svg
+  width="50"
+  height="50"
+  viewBox="0 0 50 50"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>Guppy</title>
+  <!-- Body -->
+  <ellipse cx="20" cy="25" rx="13" ry="9" fill="#FFA500" />
+  <!-- Tail -->
+  <path
+    d="M 30 20 L 45 10 L 45 40 L 30 30 Z"
+    fill="#FF8C00"
+  />
+  <!-- Eye -->
+  <circle cx="16" cy="23" r="2" fill="#000" />
+</svg>
