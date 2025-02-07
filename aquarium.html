@@ -21,20 +21,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       background: linear-gradient(45deg, #36D1DC, #5B86E5);
       color: #fff;
-      padding: 12px 20px;
+      padding: 12px 15px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      position: sticky;
-      top: 0;
       width: 100%;
       z-index: 1000;
+      gap: 10px;
     }
 
     #status-info {
       display: flex;
       align-items: center;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     #coins-display,
@@ -42,6 +43,61 @@
       font-size: 16px;
       font-weight: 500;
       font-family: "Roboto", sans-serif;
+      min-width: 120px;
+      width: 140px;
+      /* Fixed width to avoid shifting */
+      text-align: center;
+    }
+
+    /* Buttons should be evenly spaced */
+    #status-bar button {
+      font-family: "Roboto", sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      flex: 1;
+      /* Allows buttons to take equal space */
+      min-width: 120px;
+      /* Prevents buttons from shrinking too much */
+      text-align: center;
+    }
+
+    /* Adjust button layout on small screens */
+    @media (max-width: 768px) {
+      #status-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #status-info {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+      }
+
+      #status-bar button {
+        width: 90%;
+        /* Make buttons full width on small screens */
+      }
+    }
+
+    #coins-display,
+    #cleanliness-display {
+      font-size: 16px;
+      font-weight: 500;
+      font-family: "Roboto", sans-serif;
+
+    }
+
+    #cleanliness-display {
+      width: 140px;
+      text-align: center;
     }
 
     #status-actions {
@@ -745,7 +801,7 @@
       }
 
       #aquarium {
-        height: 70vh;
+        height: 81vh;
       }
     }
 
@@ -806,6 +862,15 @@
       100% {
         transform: translateX(0);
       }
+    }
+
+    .food {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: brown;
+      border-radius: 50%;
+      transition: all 0.2s linear;
     }
   </style>
 </head>
@@ -1063,29 +1128,87 @@
       }, 2000);
     }
 
+    // function feedFish() {
+    //   fishes.forEach((fish) => {
+    //     const food = document.createElement("div");
+    //     food.style.position = "absolute";
+    //     food.style.width = "8px";
+    //     food.style.height = "8px";
+    //     food.style.borderRadius = "50%";
+    //     food.style.backgroundColor = "brown";
+    //     food.style.left = fish.x + 25 + "px";
+    //     food.style.top = "0px";
+    //     document.getElementById("aquarium").appendChild(food);
+
+    //     let position = 0;
+    //     const dropInterval = setInterval(() => {
+    //       if (position >= fish.y + 25) {
+    //         clearInterval(dropInterval);
+    //         food.remove();
+    //       } else {
+    //         position += 5;
+    //         food.style.top = position + "px";
+    //       }
+    //     }, 50);
+    //   });
+    // }
+
     function feedFish() {
+      const aquarium = document.getElementById("aquarium");
+
       fishes.forEach((fish) => {
         const food = document.createElement("div");
+        food.classList.add("food");
         food.style.position = "absolute";
-        food.style.width = "8px";
-        food.style.height = "8px";
+        food.style.width = "10px";
+        food.style.height = "10px";
         food.style.borderRadius = "50%";
         food.style.backgroundColor = "brown";
-        food.style.left = fish.x + 25 + "px";
-        food.style.top = "0px";
-        document.getElementById("aquarium").appendChild(food);
 
-        let position = 0;
-        const dropInterval = setInterval(() => {
-          if (position >= fish.y + 25) {
-            clearInterval(dropInterval);
-            food.remove();
-          } else {
-            position += 5;
-            food.style.top = position + "px";
-          }
-        }, 50);
+        // Spawn food randomly at the top of the aquarium
+        food.style.left = Math.random() * (aquarium.clientWidth - 20) + "px";
+        food.style.top = "5px";
+
+        aquarium.appendChild(food);
+
+        moveFishTowardsFood(fish, food);
       });
+    }
+
+    // 🏃 Fish Moves Towards the Food
+    function moveFishTowardsFood(fish, food) {
+      const fishElement = fish.element;
+      const speed = 2; // Movement speed
+
+      function moveStep() {
+        const fishRect = fishElement.getBoundingClientRect();
+        const foodRect = food.getBoundingClientRect();
+
+        // Calculate direction
+        let dx = foodRect.left - fishRect.left;
+        let dy = foodRect.top - fishRect.top;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 10) {
+          // If fish touches the food, remove the food
+          food.remove();
+          return;
+        }
+
+        // Normalize movement vector
+        dx /= distance;
+        dy /= distance;
+
+        fish.x += dx * speed;
+        fish.y += dy * speed;
+
+        fishElement.style.left = `${fish.x}px`;
+        fishElement.style.top = `${fish.y}px`;
+
+        requestAnimationFrame(moveStep);
+      }
+
+      moveStep();
     }
 
     function cleanAquarium() {
@@ -1309,10 +1432,16 @@
         shopCoinEl.textContent = `Coins: ${coins}`;
       }
     }
+
     let minigameTime = 10;
     let minigameInterval = null;
 
     function startMiniGame() {
+      // Clear any existing interval before starting a new one
+      if (minigameInterval) {
+        clearInterval(minigameInterval);
+      }
+
       minigameTime = 10;
       document.getElementById("minigame-timer").textContent = minigameTime;
       document.getElementById("minigame-overlay").style.display = "flex";
@@ -1328,6 +1457,10 @@
       }, 1000);
     }
 
+    function endMiniGame() {
+      clearInterval(minigameInterval); // Ensure the timer is cleared when the game ends
+      document.getElementById("minigame-overlay").style.display = "none";
+    }
     // function spawnMiniGameItems() {
     //   const area = document.getElementById("minigame-area");
     //   area.innerHTML = "";
