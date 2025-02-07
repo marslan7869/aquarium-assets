@@ -913,7 +913,16 @@
         el.style.backgroundImage = `url(${this.image})`;
         el.style.left = `${this.x}px`;
         el.style.top = `${this.y}px`;
-
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          createBubble(this.x + 25, this.y + 25);
+          bubbleSound.currentTime = 0;
+          bubbleSound.play().catch((err) => {
+            console.warn("Coin sound failed to play:", err);
+          });
+          coins++;
+          updateStatusBar();
+        });
         document.getElementById("aquarium").appendChild(el);
         return el;
       }
