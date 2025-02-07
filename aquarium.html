@@ -150,7 +150,6 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* Close/OK button inside the error modal */
     #close-error-btn {
       position: absolute;
       top: 10px;
@@ -161,7 +160,6 @@
       cursor: pointer;
     }
 
-    /* Title and paragraph styling */
     .modal-content2 h2 {
       margin-top: 0;
       font-size: 1.4rem;
@@ -174,7 +172,6 @@
       color: #555;
     }
 
-    /* Optional: add a styled OK button at the bottom */
     #confirm-error-btn {
       background: linear-gradient(45deg, #36D1DC, #5B86E5);
       border: none;
@@ -268,7 +265,6 @@
       margin: 10px 0;
     }
 
-    /* =============== SHOP MODAL =============== */
     #shop-modal {
       display: none;
       position: fixed;
@@ -287,11 +283,9 @@
     #shop-modal .modal-content {
       background: linear-gradient(135deg, #ffffff, #f9f9f9);
       margin: 60px auto;
-      /* auto center horizontally */
       padding: 20px;
       border-radius: 12px;
       max-width: 800px !important;
-      /* responsive max width */
       width: 100%;
       position: relative;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -306,7 +300,6 @@
       position: relative;
     }
 
-    /* X (close) button at top-right */
     #shop-modal .close {
       position: absolute;
       right: 16px;
@@ -317,45 +310,7 @@
       cursor: pointer;
     }
 
-    /* =============== SHOP ITEMS GRID =============== */
-    /* #shop-items {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      grid-gap: 20px;
-      margin-top: 20px;
-      padding: 0 10px;
-    }
 
-    .shop-item {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .shop-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .shop-item img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-      display: block;
-      margin: 10px auto 5px;
-    }
-
-    .shop-item p {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #333;
-      font-family: "Roboto", sans-serif;
-    } */
-    /* Modal Overlay */
     #shop-modal {
       display: none;
       position: fixed;
@@ -371,7 +326,6 @@
       align-items: center;
     }
 
-    /* Modal Content */
     #shop-modal .modal-content {
       background: linear-gradient(135deg, #ffffff, #f9f9f9);
       margin: 60px auto;
@@ -383,7 +337,6 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
-    /* Close Button (X) */
     #shop-modal .close {
       position: absolute;
       right: 16px;
@@ -394,7 +347,6 @@
       cursor: pointer;
     }
 
-    /* Shop Title */
     #shop-modal h2 {
       margin-top: 0;
       font-family: "Roboto", sans-serif;
@@ -403,7 +355,6 @@
       color: #333;
     }
 
-    /* Shop Items Container: grid layout */
     #shop-items {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
@@ -412,7 +363,6 @@
       padding: 0 10px;
     }
 
-    /* Individual shop card */
     .shop-item {
       background: #fff;
       border-radius: 8px;
@@ -424,13 +374,11 @@
       padding: 10px;
     }
 
-    /* Hover effect to lift the card */
     .shop-item:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
-    /* Item image */
     .shop-item img {
       width: 70px;
       height: 70px;
@@ -438,7 +386,6 @@
       margin: 5px auto;
     }
 
-    /* Item name & price text */
     .shop-item p {
       margin: 6px 0;
       font-size: 14px;
@@ -451,12 +398,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      /* h2 on the left, coin balance on the right */
       margin-bottom: 10px;
       margin-right: 30px;
     }
 
-    /* The coin balance in the shop */
     #shop-coin-balance {
       font-family: "Roboto", sans-serif;
       font-size: 1rem;
@@ -468,7 +413,6 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    /* Quantity Row (plus/minus, input, buy button) */
     .quantity-row {
       display: flex;
       align-items: center;
@@ -477,7 +421,6 @@
       margin-top: 8px;
     }
 
-    /* The numeric input field */
     .shop-item input[type="number"] {
       width: 50px;
       text-align: center;
@@ -489,7 +432,6 @@
       font-weight: 500;
     }
 
-    /* Plus/Minus Buttons */
     .qty-btn {
       background: linear-gradient(45deg, #64b3f4, #c2e59c);
       border: none;
@@ -512,7 +454,6 @@
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Buy button inside the card */
     .buy-btn {
       background: linear-gradient(45deg, #36D1DC, #5B86E5);
       font-size: 13px;
@@ -528,7 +469,7 @@
 
     #aquarium {
       width: 100%;
-      height: calc(100vh - 70px);
+      height: calc(100vh - 82px);
       background: url("https://raw.githubusercontent.com/marslan7869/aquarium-assets/refs/heads/main/aquarium-background.svg") center/cover no-repeat;
       position: relative;
       overflow: hidden;
@@ -562,7 +503,7 @@
       animation: swim linear infinite;
     }
 
-  
+
 
     /* Ensure the decoration element is positioned relatively (if needed) */
     .decoration {
@@ -590,7 +531,7 @@
       filter: brightness(1.1);
     }
 
- 
+
 
     .bubble {
       position: absolute;
@@ -644,33 +585,6 @@
       cursor: pointer;
     }
 
-    /* 
-    #shop-items {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .shop-item {
-      text-align: center;
-      width: 80px;
-      cursor: pointer;
-    }
-
-    .shop-item img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 5px;
-    }
-
-    .shop-item p {
-      margin: 0;
-      font-size: 14px;
-    } */
-
-    /* Mini-Game Overlay */
     .overlay {
       display: none;
       position: fixed;
@@ -722,6 +636,86 @@
     .urgent-clean {
       background: linear-gradient(45deg, #ff6b6b, #ff8e53) !important;
       animation: pulse 1.1s infinite;
+    }
+
+    #minigame-overlay {
+      z-index: 3000;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      /* Use flex to center the container */
+      align-items: center;
+      justify-content: center;
+    }
+
+    #minigame-container {
+      background: linear-gradient(135deg, #ffffff, #f2f2f2);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      animation: fadeInScale 0.5s ease;
+      position: relative;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    #close-minigame-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.8rem;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    #close-minigame-btn:hover {
+      color: #ff6b6b;
+    }
+
+    #minigame-container h2 {
+      font-family: 'Roboto', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #minigame-timer {
+      font-family: 'Roboto', sans-serif;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #ff6b6b;
+    }
+
+    #minigame-instructions {
+      font-family: 'Roboto', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    #minigame-area {
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      width: 100%;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
     }
 
     @keyframes pulse {
@@ -909,17 +903,14 @@
         this.name = name;
         this.image = image;
         this.price = price;
-        // Random initial position for the decoration
         this.x = Math.floor(Math.random() * (window.innerWidth - 80));
-        this.y = Math.floor(Math.random() * (window.innerHeight - 200)) + 200;
-        // Set an initial size (width and height)
-        this.width = 50;
-        this.height = 50;
+        this.y = Math.floor(Math.random() * (window.innerHeight - 200));
+        this.width = 200;
+        this.height = 200;
         this.element = this.createDecorationElement();
       }
 
       createDecorationElement() {
-        // Create the main decoration element
         const el = document.createElement("div");
         el.classList.add("decoration");
         el.style.backgroundImage = `url(${this.image})`;
@@ -928,12 +919,8 @@
         el.style.width = `${this.width}px`;
         el.style.height = `${this.height}px`;
 
-        // ----- Dragging functionality -----
-        // Set relative position so that the resize handle can be positioned absolutely
         el.style.position = "absolute";
-        // Add event listener for dragging the element
         el.addEventListener("mousedown", (e) => {
-          // If the target is the resize handle, do not drag.
           if (e.target.classList.contains("resize-handle")) return;
 
           e.preventDefault();
@@ -945,14 +932,12 @@
           function onMouseMove(eMove) {
             const dx = eMove.clientX - startX;
             const dy = eMove.clientY - startY;
-            // Update the decoration's position variables
             this.x = origX + dx;
             this.y = origY + dy;
             el.style.left = `${this.x}px`;
             el.style.top = `${this.y}px`;
           }
 
-          // Bind with the current context so that `this` is our decoration
           const boundMouseMove = onMouseMove.bind(this);
 
           function onMouseUp() {
@@ -964,12 +949,8 @@
           document.addEventListener("mouseup", onMouseUp);
         });
 
-        // ----- Resize functionality -----
-        // Create a resize handle and append it to the decoration element
         const resizeHandle = document.createElement("div");
         resizeHandle.classList.add("resize-handle");
-
-        // Prevent dragging when resizing
         resizeHandle.addEventListener("mousedown", (e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -1000,7 +981,6 @@
           document.addEventListener("mouseup", onMouseUp);
         });
 
-        // Append the resize handle to the decoration element
         el.appendChild(resizeHandle);
 
         document.getElementById("aquarium").appendChild(el);
@@ -1034,7 +1014,6 @@
         food.style.top = "0px";
         document.getElementById("aquarium").appendChild(food);
 
-        // Animate the food falling
         let position = 0;
         const dropInterval = setInterval(() => {
           if (position >= fish.y + 25) {
@@ -1079,7 +1058,7 @@
         // Optionally reset cleanliness a bit
         cleanliness = 60;
         showErrorModal(
-          "Your aquarium got too dirty! We automatically deducted 20 coins for cleaning services."
+          "Your aquarium got too dirty! We automatically deducted 5 coins for cleaning services."
         );
 
       }
@@ -1126,8 +1105,7 @@
       const errorMessageEl = document.getElementById("error-message");
       errorMessageEl.innerText = message;
 
-      // Display the modal
-      errorModal.style.display = "block";
+      errorModal.style.display = "flex";
     }
     function closeErrorModal() {
       document.getElementById("error-modal").style.display = "none";
@@ -1135,7 +1113,6 @@
     document.getElementById("close-error-btn").addEventListener("click", closeErrorModal);
     document.getElementById("error-ok-btn").addEventListener("click", closeErrorModal);
 
-    // Optionally, close when clicking outside the modal content
     window.addEventListener("click", (e) => {
       const errorModal = document.getElementById("error-modal");
       if (e.target === errorModal) {
@@ -1215,7 +1192,6 @@
         };
         quantityRow.appendChild(buyBtn);
 
-        // Append elements to item card
         itemDiv.appendChild(img);
         itemDiv.appendChild(nameP);
         itemDiv.appendChild(priceP);
@@ -1225,11 +1201,9 @@
       });
     }
     function updateStatusBar() {
-      // Existing code:
       document.getElementById("coins-display").textContent = `Coins: ${coins}`;
       document.getElementById("cleanliness-display").textContent = `Cleanliness: ${cleanliness.toFixed(0)}%`;
 
-      // NEW: Update the shop modal coin display if it exists
       const shopCoinEl = document.getElementById("shop-coin-balance");
       if (shopCoinEl) {
         shopCoinEl.textContent = `Coins: ${coins}`;
@@ -1243,7 +1217,6 @@
       document.getElementById("minigame-timer").textContent = minigameTime;
       document.getElementById("minigame-overlay").style.display = "flex";
 
-      // Spawn coins and obstacles
       spawnMiniGameItems();
 
       minigameInterval = setInterval(() => {
@@ -1294,11 +1267,9 @@
       const aquarium = document.getElementById("aquarium");
       const rect = aquarium.getBoundingClientRect();
 
-      // Create the algae lump
       const algaeEl = document.createElement("div");
       algaeEl.classList.add("algae");
 
-      // Random position, ensuring it's fully inside aquarium
       const algaeSize = 60; // dimension of the algae lump
       const xPos = Math.floor(Math.random() * (rect.width - algaeSize));
       const yPos = Math.floor(Math.random() * (rect.height - algaeSize));
@@ -1310,9 +1281,6 @@
       algaeElements.push(algaeEl);
     }
 
-    /**
-     * Removes all algae lumps from the aquarium and clears the array.
-     */
     function removeAllAlgae() {
       for (let algaeEl of algaeElements) {
         if (algaeEl.parentNode) {
@@ -1326,7 +1294,6 @@
       document.getElementById("minigame-overlay").style.display = "none";
     }
     window.addEventListener("load", () => {
-      // Initial shop load
       populateShop();
       updateStatusBar();
       gameLoop(); // Start main loop
