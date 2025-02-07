@@ -163,7 +163,7 @@
     .modal-content2 h2 {
       margin-top: 0;
       font-size: 1.4rem;
-      color: #333;
+      color: #FF8E53;
     }
 
     .modal-content2 p {
@@ -214,13 +214,13 @@
       font-family: "Roboto", sans-serif;
       font-size: 1.6rem;
       margin-bottom: 15px;
-      color: #d9534f;
+      color: linear-gradient(45deg, #FF6B6B, #FF8E53);
     }
 
     .modal-content2 p {
       font-size: 1rem;
       margin: 10px 0 20px;
-      color: #333;
+      color: linear-gradient(45deg, #FF6B6B, #FF8E53);
       font-family: "Roboto", sans-serif;
     }
 
@@ -478,6 +478,8 @@
     .fish {
       animation: swim 10s linear infinite;
     }
+
+
 
     .algae {
       position: absolute;
@@ -746,6 +748,65 @@
         height: 70vh;
       }
     }
+
+    /* Floating points animation */
+    .points-animation {
+      position: absolute;
+      font-family: 'Roboto', sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      pointer-events: none;
+      animation: floatUp 1.5s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+    }
+
+    .points-animation.positive {
+      color: #4CAF50;
+      /* Green for positive points */
+    }
+
+    .points-animation.negative {
+      color: #F44336;
+      /* Red for negative points */
+    }
+
+    .wave-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background: url("wave-animation.svg") repeat-x;
+      opacity: 0.3;
+      mix-blend-mode: soft-light;
+      animation: waveMove 8s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0% {
+        transform: translateX(0);
+      }
+
+      50% {
+        transform: translateX(20px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
 
@@ -761,6 +822,7 @@
   </div>
 
   <div id="aquarium">
+    <div class="wave-overlay"></div>
   </div>
 
   <!-- The Shop Modal -->
@@ -794,7 +856,7 @@
   <div id="error-modal" class="modal">
     <div class="modal-content2">
       <span id="close-error-btn" class="close">&times;</span>
-      <h2>Error</h2>
+      <h2>Warning</h2>
       <p id="error-message">An Error</p>
       <!-- Error Modal “OK” Button -->
       <button id="error-ok-btn" class="error-ok-btn">OK</button>
@@ -825,6 +887,7 @@
 
     bubbleSound.volume = 0.7;
     coinSound.volume = 0.7;
+
     class Fish {
       constructor({ name, image, price }) {
         this.name = name;
@@ -850,18 +913,6 @@
         el.style.backgroundImage = `url(${this.image})`;
         el.style.left = `${this.x}px`;
         el.style.top = `${this.y}px`;
-
-        el.addEventListener("click", (e) => {
-          e.stopPropagation();
-          createBubble(this.x + 25, this.y + 25);
-          bubbleSound.currentTime = 0;
-          bubbleSound.play().catch((err) => {
-            console.warn("Coin sound failed to play:", err);
-          });
-          coins++;
-
-          updateStatusBar();
-        });
 
         document.getElementById("aquarium").appendChild(el);
         return el;
@@ -894,9 +945,10 @@
 
         this.element.style.left = `${this.x}px`;
         this.element.style.top = `${this.y}px`;
-      }
-    }
 
+      }
+
+    }
 
     class Decoration {
       constructor({ name, image, price }) {
@@ -949,39 +1001,39 @@
           document.addEventListener("mouseup", onMouseUp);
         });
 
-        const resizeHandle = document.createElement("div");
-        resizeHandle.classList.add("resize-handle");
-        resizeHandle.addEventListener("mousedown", (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          let startX = e.clientX;
-          let startY = e.clientY;
-          let startWidth = this.width;
-          let startHeight = this.height;
+        // const resizeHandle = document.createElement("div");
+        // resizeHandle.classList.add("resize-handle");
+        // resizeHandle.addEventListener("mousedown", (e) => {
+        //   e.stopPropagation();
+        //   e.preventDefault();
+        //   let startX = e.clientX;
+        //   let startY = e.clientY;
+        //   let startWidth = this.width;
+        //   let startHeight = this.height;
 
-          function onMouseMove(eMove) {
-            // Calculate new dimensions based on mouse movement
-            const newWidth = startWidth + (eMove.clientX - startX);
-            const newHeight = startHeight + (eMove.clientY - startY);
-            // Optionally, set a minimum size
-            this.width = newWidth > 30 ? newWidth : 30;
-            this.height = newHeight > 30 ? newHeight : 30;
-            el.style.width = `${this.width}px`;
-            el.style.height = `${this.height}px`;
-          }
+        //   function onMouseMove(eMove) {
+        //     // Calculate new dimensions based on mouse movement
+        //     const newWidth = startWidth + (eMove.clientX - startX);
+        //     const newHeight = startHeight + (eMove.clientY - startY);
+        //     // Optionally, set a minimum size
+        //     this.width = newWidth > 30 ? newWidth : 30;
+        //     this.height = newHeight > 30 ? newHeight : 30;
+        //     el.style.width = `${this.width}px`;
+        //     el.style.height = `${this.height}px`;
+        //   }
 
-          const boundMouseMove = onMouseMove.bind(this);
+        //   const boundMouseMove = onMouseMove.bind(this);
 
-          function onMouseUp() {
-            document.removeEventListener("mousemove", boundMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-          }
+        //   function onMouseUp() {
+        //     document.removeEventListener("mousemove", boundMouseMove);
+        //     document.removeEventListener("mouseup", onMouseUp);
+        //   }
 
-          document.addEventListener("mousemove", boundMouseMove);
-          document.addEventListener("mouseup", onMouseUp);
-        });
+        //   document.addEventListener("mousemove", boundMouseMove);
+        //   document.addEventListener("mouseup", onMouseUp);
+        // });
 
-        el.appendChild(resizeHandle);
+        // el.appendChild(resizeHandle);
 
         document.getElementById("aquarium").appendChild(el);
         return el;
@@ -1028,18 +1080,55 @@
     }
 
     function cleanAquarium() {
-      cleanliness = 100;
-      updateStatusBar();
-      removeAllAlgae();
+      let cleaningCost = 5;
+      if (coins >= cleaningCost) {
+        coins -= cleaningCost;
+        cleanliness = 100;
+        showPointsAqua(800, 60, "-5", "negative"); // Show -5 animation at a default position
+        updateStatusBar();
+        removeAllAlgae();
+      } else {
+        showErrorModal("You don't have enough coins to clean the aquarium! Earn more first.");
+      }
     }
+    function showPointsAqua(x, y, text, type) {
+      const pointsEl = document.createElement("div");
+      pointsEl.className = "points-animation " + type;
+      pointsEl.innerText = text;
+      pointsEl.style.left = x + "px";
+      pointsEl.style.top = y + "px";
 
+      document.getElementById("aquarium").appendChild(pointsEl);
+
+      setTimeout(() => {
+        if (pointsEl.parentNode) {
+          pointsEl.parentNode.removeChild(pointsEl);
+        }
+      }, 1500);
+    }
+    function showPoints(x, y, text, type) {
+      const pointsEl = document.createElement("div");
+      pointsEl.className = "points-animation " + type;
+      pointsEl.innerText = text;
+      pointsEl.style.left = x + "px";
+      pointsEl.style.top = y + "px";
+      // Append the points element to the mini game area container
+      const container = document.getElementById("minigame-area");
+      container.appendChild(pointsEl);
+      // Remove the element after the animation is finished (1.5s here)
+      setTimeout(() => {
+        if (pointsEl.parentNode) {
+          pointsEl.parentNode.removeChild(pointsEl);
+        }
+      }, 1500);
+    }
     function updateCleanliness() {
       cleanliness -= 0.03; // degrade over time
       if (cleanliness < 0) cleanliness = 0;
       updateStatusBar();
       const cleanBtn = document.getElementById("clean-btn");
 
-      // Highlight if cleanliness < 20%
+      // Highlight if cleanliness < 40%
       if (cleanliness < 40) {
         cleanBtn.classList.add("urgent-clean");
       } else {
@@ -1051,17 +1140,20 @@
         let penalty = 5; // coins to deduct
         if (coins >= penalty) {
           coins -= penalty;
+          cleanliness = 60; // Reset cleanliness to prevent continuous deduction
+          showErrorModal(
+            "Your aquarium got too dirty! We automatically deducted 5 coins for cleaning services."
+          );
         } else {
-          coins = 0;
+          cleanliness = 20; // Reset cleanliness to prevent continuous deduction
+
+          showErrorModal(
+            "Your aquarium is too dirty, but you don't have enough coins to clean it! Earn more coins first."
+          );
         }
         updateStatusBar();
-        // Optionally reset cleanliness a bit
-        cleanliness = 60;
-        showErrorModal(
-          "Your aquarium got too dirty! We automatically deducted 5 coins for cleaning services."
-        );
-
       }
+
       if (cleanliness < 80 && cleanliness > 79.97) {
         spawnAlgae();
       } else if (cleanliness < 60 && cleanliness > 59.97) {
@@ -1076,7 +1168,6 @@
         spawnAlgae();
       }
     }
-
 
     function gameLoop() {
       updateCleanliness();
@@ -1228,41 +1319,86 @@
       }, 1000);
     }
 
+    // function spawnMiniGameItems() {
+    //   const area = document.getElementById("minigame-area");
+    //   area.innerHTML = "";
+
+    //   // For a small example, spawn 5 coins and 3 obstacles
+    //   for (let i = 0; i < 5; i++) {
+    //     const coin = document.createElement("div");
+    //     coin.classList.add("minigame-coin");
+    //     coin.style.left = Math.random() * (area.offsetWidth - 30) + "px";
+    //     coin.style.top = Math.random() * (area.offsetHeight - 30) + "px";
+    //     coin.addEventListener("click", () => {
+    //       coins += 10; // Earn 5 coins
+    //       updateStatusBar();
+    //       coinSound.currentTime = 0;
+    //       coinSound.play().catch((err) => {
+    //         console.warn("Coin sound failed to play:", err);
+    //       });
+    //       coin.remove();
+    //     });
+    //     area.appendChild(coin);
+    //   }
+    //   for (let i = 0; i < 3; i++) {
+    //     const obstacle = document.createElement("div");
+    //     obstacle.classList.add("minigame-obstacle");
+    //     obstacle.style.left = Math.random() * (area.offsetWidth - 30) + "px";
+    //     obstacle.style.top = Math.random() * (area.offsetHeight - 30) + "px";
+    //     obstacle.addEventListener("click", () => {
+    //       // Penalty if user clicks obstacle
+    //       coins = Math.max(0, coins - 5);
+    //       updateStatusBar();
+    //       obstacle.remove();
+    //     });
+    //     area.appendChild(obstacle);
+    //   }
+    // }
     function spawnMiniGameItems() {
       const area = document.getElementById("minigame-area");
       area.innerHTML = "";
 
-      // For a small example, spawn 5 coins and 3 obstacles
+      // Spawn 5 coins
       for (let i = 0; i < 5; i++) {
         const coin = document.createElement("div");
         coin.classList.add("minigame-coin");
         coin.style.left = Math.random() * (area.offsetWidth - 30) + "px";
         coin.style.top = Math.random() * (area.offsetHeight - 30) + "px";
         coin.addEventListener("click", () => {
-          coins += 10; // Earn 5 coins
+          coins += 10; // Increase coins
           updateStatusBar();
           coinSound.currentTime = 0;
           coinSound.play().catch((err) => {
             console.warn("Coin sound failed to play:", err);
           });
+          // Get current position for the animation; adjust as needed
+          const left = parseFloat(coin.style.left);
+          const top = parseFloat(coin.style.top);
+          showPoints(left, top, "+10", "positive");
           coin.remove();
         });
         area.appendChild(coin);
       }
+
+      // Spawn 3 obstacles
       for (let i = 0; i < 3; i++) {
         const obstacle = document.createElement("div");
         obstacle.classList.add("minigame-obstacle");
         obstacle.style.left = Math.random() * (area.offsetWidth - 30) + "px";
         obstacle.style.top = Math.random() * (area.offsetHeight - 30) + "px";
         obstacle.addEventListener("click", () => {
-          // Penalty if user clicks obstacle
-          coins = Math.max(0, coins - 5);
+          coins = Math.max(0, coins - 5); // Deduct coins
           updateStatusBar();
+          // Get position for the animation
+          const left = parseFloat(obstacle.style.left);
+          const top = parseFloat(obstacle.style.top);
+          showPoints(left, top, "-5", "negative");
           obstacle.remove();
         });
         area.appendChild(obstacle);
       }
     }
+
     function spawnAlgae() {
       const aquarium = document.getElementById("aquarium");
       const rect = aquarium.getBoundingClientRect();
